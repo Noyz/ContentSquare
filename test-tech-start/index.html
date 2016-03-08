@@ -1,0 +1,48 @@
+<!DOCTYPE>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<title>Content Square</title>
+	<link rel="stylesheet" type="text/css" href="files/style.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="files/contentsquare.js"></script>
+</head>
+<body>
+	<div id="page">
+		<div class="header">
+			<h3>Test technique Content Square : Intégration AB tests</h3>
+			<p>Modifier l'intégration du formulaire en remplacant les boutons radios par un select</p>
+			<ol>
+				<li>Observer/analyser le comportement des boutons radios au click</li>
+				<li>Créer un select dans la div.right qui reprendra les informations (html et values) des boutons radios</li>
+				<li>Au changement de valeur du select : 
+					<ul>
+						<li>Bloquer le racfraichissement de la page à la sousmission du formulaire,</li>
+						<li>Afficher la valeur dans la div.console,</li>
+						<li>Checker le bon bouton radio sans déclencher l'alert,</li>
+					</ul>
+			</ol>
+		</div>
+		<div class="content">
+			<form action="" method="post" id="testTechnique">
+				<div class="left">
+					<p><input type="radio" name="csRadio" value="01" onclick="javascript:alert(this.value)" />radio 01</p>
+					<p><input type="radio" name="csRadio" value="02" onclick="javascript:alert(this.value)" />radio 02</p>
+					<p><input type="radio" name="csRadio" value="03" onclick="javascript:alert(this.value)" />radio 03</p>
+					<p><input type="radio" name="csRadio" value="04" onclick="javascript:alert(this.value)" />radio 04</p>
+				</div>
+				<div class="right">
+
+
+				</div>
+				<div style="clear:both"></div>
+				<div class="full">
+					<input type="submit" value="envoyer" name="send" />
+				</div>
+				<div class="full console"></div>
+			</form>
+		</div>
+		<div class="footer"></div>
+	</div>
+</body>
+</html>

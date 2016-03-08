@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="jquery-1.11.3.js"></script>
+		<script type="text/javascript" src="jquery.validate.js"></script>
+		<meta charset="UTF-8">
+	<title>Title of the document</title>
+
+	</head>
+
+	<body>
+		<form id="myForm">
+			<input name="birthday" type="text" placeholder="Auto-completion Birthday"/>
+			<br>
+			<input name="fieldMail" type="text" placeholder="Auto-completion Mail"/>
+			<br>
+			<input name="mail" type="email" placeholder="renseigner votre adresse"/>
+			<br>
+			<input id="phone" name="tel" type="tel" placeholder="Auto-completion Numéro de téléphone" />
+			<br>
+			<br>
+		</form>
+		<input type="button" value="Touche moi"/>
+
+		<!-- AUTO COMPLETION CHAMPS BIRTHDAY-->
+		<script>
+			var years;
+			var months;
+			var tabYear = [];
+			var tabMonth = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+
+			//Déclaration du nombre d'année de 1930 à 2016//
+			for(var i = 1930; i < 2017; i++){
+				tabYear.push(i);	
+			}
+
+			function daysInMonth(month,year) {
+			    return new Date(year, month, 0).getDate();
+			}
+
+
+			///Création des trois sélect dans le DOM
+			$('#myForm').append('<select id="jour">Jours</select>');
+			$('#myForm').append('<select id="mois">Mois</select>');
+			$('#myForm').append('<select id="annee">Annees</select>');
+
+
+			//Ajout du nombre d'années dans le sélect dédié à l'année
+			for(var i = 0; i<tabYear.length;i++){
+				$('#annee').append('<option value="'+ tabYear[i] +'">'+ tabYear[i] +'</option>' )
+			};
+
+			$('#annee').append('<option value="Années" selected>Années</option>' );
+			$('#mois').append('<option value="Mois" selected>Mois</option>' );
+			$('#jour').append('<option value="Jours" selected>Jours</option>' );
+
+			//Ajout du nombre de mois dans le sélect dédié au mois
+			$('#annee').on('change', function(){
+				$('#mois').find('option').remove().end();
+				years = $(this).val();
+				for(var i = 0; i<tabMonth.length;i++){
+					$('#mois').append('<option value="'+ tabMonth[i] +'">'+ tabMonth[i] +'</option>' );
+				}
+			});
+
+			//Ajout du nombre de jours dans le sélect dédié au jours
+			$('#mois').on('change', function(){
+				$('#jour').find('option').remove().end();
+				months = $(this).val();
+				var allDaysInMonth =  daysInMonth(parseInt(months), parseInt(years));
+				for(var i = 1; i < allDaysInMonth + 1;i++){
+					$('#jour').append('<option value="'+ [i] +'">'+ [i] +'</option>' );
+				}
+				$('#jour').trigger('click'); // Au cas ou l'utilisateur serait née le premier du mois car cela ne changerais donc pas la valeur du jour.
+			});
+
+
+			//Au clique sur le sur le select dédié aux jours, récupère les informations du jour/mois/années, et les rajoute dans une input text vide.
+			$('#jour').on('click', function(){
+				if($('#myForm select').val())
+				jours = $(this).val();
+				$('input[name="birthday"]').attr('value', jours + '/'+ months + '/' +years);
+			});
+		</script>
+
+
+
+		 	<!-- Ajout automatique du champs de confirmation de mail-->
+	 	<script>
+			$('input[name="mail"]').blur(function(){
+				$('input[name="mail"]').val();
+				$('input[name="fieldMail"]').attr('value', $('input[name="mail"]').val())
+			});
+	 	</script>
+
+
+
+
+	 	<!-- Vérification du numéro de téléphone rentré (fixe ou mobile)-->
+		<script>
+			$('input[type="button"]').after('<p id="message"></p>')
+			var valeur = $('#phone').val();
+
+				jQuery.validator.addMethod("telephoneMobileFormat", function(a){
+		                if (a == "") {
+		                    return true
+		                }
+		                return /^0[6-7][0-9]{8}$/.test(a);
+		            }, "Votre numéro de téléphone n'est pas correct");
+
+				$('input[type="button"]').on('click',function(){
+					var format = jQuery.validator.methods.telephoneMobileFormat($('#phone').val());
+					if(format){
+						$('#message').text('Vous avez rentré un numéro de téléphone portable')
+					}else{
+						$('#message').text('Vous avez rentré un numéro de téléphone fixe')
+					}
+				});
+		</script>
+	</body>
+</html>

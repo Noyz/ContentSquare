@@ -1,0 +1,56 @@
+body {
+	background-color:white;
+	margin:0;
+}
+
+section {
+	width:947px;
+	background-color:#C1CDCB;
+	height:100%;
+	margin:0 auto;
+}
+
+header{
+	height: 40px;
+	width:100%;
+	background-color:grey;
+}
+#first_bloc{
+	float:left;
+	width:600px;
+	border:1px solid black;
+	height:50px;
+	margin-top:15px;
+	background-color:white;
+}
+
+#second_bloc{
+	float:right;
+	width:337px;
+	border:1px solid black;
+	height:150px;
+	background-color:white;
+	margin-top:15px;
+}
+
+#submit {
+  background: url("img/images.jpg") no-repeat scroll 0 0 transparent;
+  color: #000000;
+  cursor: pointer;
+  font-weight: bold;
+  height: 20px;
+  padding-bottom: 2px;
+  width: 75px;
+}
+
+footer {
+	background-color:#504B4A;
+	height:80px;
+}
+
+ul{
+	padding:0;
+	list-type:none;
+	margin:0;
+
+}

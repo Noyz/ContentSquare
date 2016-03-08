@@ -1,0 +1,9 @@
+body{ background:#dedede; min-width:900px; max-width:1200px; margin:0 auto; }
+#page{ background: #fff; } 
+#page > div { padding:20px; }
+#page div.header { border-bottom:1px dotted #dedede; }
+#page div.footer { height:50px; border-top:1px dotted #dedede; }
+#page div.content { }
+#page div.left, #page div.right { float:left; width:50%; border-right:1px solid #dedede; } 
+#page div.right { float:right; border:none; width:48%; } 
+#page div.full { clear:both; min-height:50px; text-align:center; padding-top:20px; margin-top:20px; border-top:1px solid #dedede; }
