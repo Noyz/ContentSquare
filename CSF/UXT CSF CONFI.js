@@ -51,11 +51,13 @@ cs.setTplClass = function(argument){
 
 var createClassContent = cs.$('#jca_27576_0_jca_27575_0_jca_27572_1_jca_27571_0_jca_27570_0_jca_27568_1').addClass('cscontent');
 var createClassAside = cs.$('#jca_27576_0_jca_27575_0_jca_27572_1_mbo_198_1').addClass('csaside');
+var elem;
+var row;
 
 
 /////////////////////////////////////////////// FORMULAIRE PROFIL ///////////////////////////////////////////////////////////////////////////////////
 cs.formProfil = function(){
-	cs.css += '#csInput{height:40px;width:452px}.csDateDeNaissance{display:none}.cscoordonnes{clear:both}.labelBirthDay{margin:0 0 6px; color:#727272;font-size:1.6em}#confirmationEmail{display:none}section.csf-form .form-content>section .form-line.label-inside label{display:block !important}.cspicker{float:left;width:32.5%;padding-right:5px;height:36px;margin-bottom:12px;}.cstitreChamps{color:grey;font-weight:bold;}';
+	cs.css += '.csTelBoot3 p{display:none}#csInput{height:40px;width:452px}.csDateDeNaissance{display:none}.cscoordonnes{clear:both}.labelBirthDay{margin:0 0 6px; color:#727272;font-size:1.6em}#confirmationEmail{display:none}section.csf-form .form-content>section .form-line.label-inside label{display:block !important}.cspicker{float:left;width:32.5%;padding-right:5px;height:36px;margin-bottom:12px;}.cstitreChamps{color:grey;font-weight:bold;}';
 	cs.$('#sub-step1 > div > div:nth-child(2)').addClass('cscoordonnes'); //A changer
 	cs.$('#dateDeNaissance').parents('.col-xs-12.col-sm-12.col-md-12').addClass('csDateDeNaissance');
 	cs.$('.row').parents('.col-xs-12.col-sm-6.col-md-6').addClass('col-md-8 col-sm-8').removeClass('col-md-6 col-sm-6');
@@ -166,66 +168,63 @@ cs.confirmMail = function(){
 };
 
 cs.detectFormat = function(str){
+	cs.$('#telephonePortable').val('');
+	cs.$('#telephone').val('');
 	if( jQuery.validator.methods.telephoneFixeFormat(str) ){
+		jQuery('#telephone').val(jQuery('#csInput').val())
 		return cs.$('#telephone');
 	} else if( jQuery.validator.methods.telephoneMobileFormat(str) ){
-		return cs.$('telephonePortable');
+		jQuery('#telephonePortable').val(jQuery('#csInput').val())
+		return cs.$('#telephonePortable');
 	} else {
 		return false;
 	}
 };
 
+cs.detectError = function(){
+	if(jQuery(csInput).val() == '' || jQuery(csInput).val().length > 10 ){
+		elem = false;
+	}
+};
+
 cs.telephonie = function(){
-  
+  	var csTelControl = cs.$('<div class="row csTelControl"/>').append('<div class="col-xs-12 col-sm-8 col-md-8 csTelBoot" />');
 	var csInput = cs.$('<input />').attr({'type':'text','name':'csChpsTel','placeholder':'Ex : 0102030405','id':'csInput'}).addClass('picker').on('blur',function(){
-		var elem = cs.detectFormat( cs.$(this).val() );
+		elem = cs.detectFormat( cs.$(this).val() );
+		cs.detectError();
 		if(!elem){
-			//dans la zone cachée récupérer le message d'erreur et le append dans la div (csTelControl)
+			jQuery('#telephoneCheck').parents('p').css('display',"block");
+			jQuery('.csTelBoot2').addClass('error-field').removeClass('success');
+			jQuery('.csTelBoot3 label').addClass('error-label');
+			jQuery('#csInput').addClass('error-field')
 		} else {
-			elem.val( cs.$('this').val() );
+			jQuery('#telephoneCheck').parents('p').css('display','none');
+			jQuery('.csTelBoot2').addClass('success').removeClass('error-field');
+			jQuery('.csTelBoot3 label').removeClass('error-label');
 		}
 	});
-	cs.$('.cscontent #sub-step2').prepend('<h2 class="csStep2">COMPLÉTEZ VOTRE PROFIL</h2>');
-	cs.$('.csStep2').wrap('<div class="row csTitreStep2"></div>').wrap('<div class="col-xs-12 col-sm-12 col-md-12"></div>');
-	cs.$('.csTitreStep2').after(csInput);
-	cs.$('.csTelControl').append('<label for="Telephone">Telephone</label>');
-	cs.$('#csInput').wrap('<div class="row"></div>').wrap('<div class="col-xs-12 col-sm-12 col-md-12"></div>').wrap('<div class=" form-line label-inside"></div>').wrap('<div class=" input-append csTelControl"></div>');
-
-	//css masquer les champs texte uniquement
-
-	// append csTelControl
-
-
-	// cs.$('.address').before(champsTel);
-	// cs.$('.address > .row > .col-xs-12').addClass('col-md-8 csliving col-sm-8');
-	// cs.$('.address > .row > .col-xs-12').removeClass('col-md-12 col-sm-12');
-	// cs.$('.csliving').after(complementAdresse);
-
-
-	jQuery.validator.addMethod("telephoneFixeFormat", function(a){
-        if (a == "") {
-            return true
-        }
-        return /^0[1-9][0-9]{8}$/.test(a);
-    }, "Votre numéro de téléphone n'est pas correct");
-    cs.$('#cstelephoneStandard').blur(function(){	
-    	var format = jQuery.validator.methods.telephoneMobileFormat(cs.$('#cstelephoneStandard').val());
-    	if(format){
-    		cs.$('#telephonePortable').val(cs.$('#cstelephoneStandard').val())
-    	}else{
-    		cs.$('#telephone').val(cs.$('#cstelephoneStandard').val())
-    	}
-    });
-    if(cs.$('#cstelephone-error').css('display','inline-block')){
-		cs.$('.csTel').addClass('error-label');
-		cs.log('1')
-	}else{
-		cs.$('.csTel').removeClass('error-label');
-		cs.log('0')
-	}
+	jQuery('.cscontent h2').text('COMPLÉTEZ VOTRE PROFIL');
+	row = cs.$('#sub-step2 > .row:nth-child(2)').after(csTelControl); 
+	jQuery('.csTelBoot').append('<div class="form-line csTelBoot2"/>');
+	jQuery('.csTelBoot2').append('<div class="input-append csTelBoot3"/>');
+	jQuery('.csTelBoot3').append('<label for="Téléphone">Téléphone</label>');
+	jQuery('.csTelBoot3').append(csInput);
+	jQuery('.csTelBoot3').append('<p><label id="telephoneCheck" class="form-error error-label" for="telephoneCheck" style="display: inline-block;">Le champ Télephone n´est pas un numéro de téléphone portable valide.</label></p>');	
 
 };
 
+cs.complementAdresse = function(){
+	var complement =cs.$('<input />').attr({'type':'text','name':'complement_adresse','placeholder':'Ex : Appartement, résidence, tour...','id':'csChpsTel'}).addClass('picker');
+	cs.$('.csTelControl + div').addClass('csadresseBis');
+	cs.$('.csadresseBis').after('<div class="row csadresseBis2"/>');
+	cs.$('.csadresseBis2').append('<div class="col-xs-12 col-md-8 col col-sm-8 csadresseBis3"/>');
+	cs.$('.csadresseBis3').append('<div class="form-line "/>');
+	cs.$('.csadresseBis3 > .form-line').append('<div class="input-append "/>');
+	cs.$('.csadresseBis3 > .form-line > ').append('<div class="input-append "/>');
+	cs.$('.csadresseBis3 > .form-line > .input-append').append('<label for="Adressebis">Complément d\'adresse</label>');
+	cs.$('.csadresseBis3 > .form-line > .input-append').append(complement);
+
+};
 cs.pays = function(){
 	var champsAdresse = '<div class="col-xs-12 col-md-8 col col-sm-8"><div class="form-line "><label for="pays">Pays ou DOM TOM</label><div class="field"><div class="picker "><select id="pays" name="pays" tabindex="8"><option value="AF">AFGHANISTAN</option><option value="ZA">AFRIQUE DU SUD</option><option value="AL">ALBANIE</option><option value="DZ">ALGERIE</option><option value="DE">ALLEMAGNE</option><option value="AD">ANDORRE</option><option value="AO">ANGOLA</option><option value="AI">ANGUILLA</option><option value="AQ">ANTARCTIQUE</option><option value="AG">ANTIGUA-ET-BARBUDA</option><option value="AN">ANTILLES NEERLANDAISES</option><option value="SA">ARABIE SAOUDITE</option><option value="AR">ARGENTINE</option><option value="AM">ARMENIE</option><option value="AW">ARUBA</option><option value="AU">AUSTRALIE</option><option value="AT">AUTRICHE</option><option value="AZ">AZERBAIDJAN</option><option value="BS">BAHAMAS</option><option value="BH">BAHREIN</option><option value="BD">BANGLADESH</option><option value="BB">BARBADE</option><option value="BY">BELARUS</option><option value="BE">BELGIQUE</option><option value="BZ">BELIZE</option><option value="BJ">BENIN</option><option value="BM">BERMUDES</option><option value="BT">BHOUTAN</option><option value="BO">BOLIVIE</option><option value="BA">BOSNIE-HERZEGOVINE</option><option value="BW">BOTSWANA</option><option value="BV">BOUVET, ILE</option><option value="BR">BRESIL</option><option value="BN">BRUNEI DARUSSALAM</option><option value="BG">BULGARIE</option><option value="BF">BURKINA FASO</option><option value="BI">BURUNDI</option><option value="KY">CAIMANES, ILES</option><option value="KH">CAMBODGE</option><option value="CM">CAMEROUN</option><option value="CA">CANADA</option><option value="CV">CAP-VERT</option><option value="CF">CENTRAFRICAINE, REPUBLIQUE</option><option value="CL">CHILI</option><option value="CN">CHINE</option><option value="CX">CHRISTMAS, ILE</option><option value="CY">CHYPRE</option><option value="CC">COCOS (KEELING), ILES</option><option value="CO">COLOMBIE</option><option value="KM">COMORES</option><option value="CG">CONGO</option><option value="CD">CONGO, LA REPUBLIQUE DEMOCRATIQUE DU</option><option value="CK">COOK, ILES</option><option value="KR">COREE, REPUBLIQUE DE</option><option value="KP">COREE, REPUBLIQUE POPULAIRE DEMOCRATIQUE DE</option><option value="CR">COSTA RICA</option><option value="CI">COTE D\'IVOIRE</option><option value="HR">CROATIE</option><option value="CU">CUBA</option><option value="DK">DANEMARK</option><option value="DJ">DJIBOUTI</option><option value="DO">DOMINICAINE, REPUBLIQUE</option><option value="DM">DOMINIQUE</option><option value="EG">EGYPTE</option><option value="SV">EL SALVADOR</option><option value="AE">EMIRATS ARABES UNIS</option><option value="EC">EQUATEUR</option><option value="ER">ERYTHREE</option><option value="ES">ESPAGNE</option><option value="EE">ESTONIE</option><option value="US">ETATS-UNIS</option><option value="ET">ETHIOPIE</option><option value="FK">FALKLAND, ILES (MALVINAS)</option><option value="FO">FEROE, ILES</option><option value="FJ">FIDJI</option><option value="FI">FINLANDE</option><option selected="selected" value="FR">FRANCE</option><option value="GA">GABON</option><option value="GM">GAMBIE</option><option value="GE">GEORGIE</option><option value="GS">GEORGIE DU SUD ET LES ILES SANDWICH DU SUD</option><option value="GH">GHANA</option><option value="GI">GIBRALTAR</option><option value="GR">GRECE</option><option value="GD">GRENADE</option><option value="GL">GROENLAND</option><option value="GP">GUADELOUPE</option><option value="GU">GUAM</option><option value="GT">GUATEMALA</option><option value="GN">GUINEE</option><option value="GQ">GUINEE EQUATORIALE</option><option value="GW">GUINEE-BISSAU</option><option value="GY">GUYANA</option><option value="GF">GUYANE FRANCAISE</option><option value="HT">HAITI</option><option value="HM">HEARD, ILE ET MCDONALD, ILES</option><option value="HN">HONDURAS</option><option value="HK">HONG-KONG</option><option value="HU">HONGRIE</option><option value="UM">ILES MINEURES ELOIGNEES DES ETATS-UNIS</option><option value="VG">ILES VIERGES BRITANNIQUES</option><option value="VI">ILES VIERGES DES ETATS-UNIS</option><option value="IN">INDE</option><option value="ID">INDONESIE</option><option value="IR">IRAN, REPUBLIQUE ISLAMIQUE D\'</option><option value="IQ">IRAQ</option><option value="IE">IRLANDE</option><option value="IS">ISLANDE</option><option value="IL">ISRAEL</option><option value="IT">ITALIE</option><option value="JM">JAMAIQUE</option><option value="JP">JAPON</option><option value="JO">JORDANIE</option><option value="KZ">KAZAKHSTAN</option><option value="KE">KENYA</option><option value="KG">KIRGHIZISTAN</option><option value="KI">KIRIBATI</option><option value="KW">KOWEIT</option><option value="AX">?LAND, ILES</option><option value="LA">LAO, REPUBLIQUE DEMOCRATIQUE POPULAIRE</option><option value="LS">LESOTHO</option><option value="LV">LETTONIE</option><option value="LB">LIBAN</option><option value="LR">LIBERIA</option><option value="LY">LIBYENNE, JAMAHIRIYA ARABE</option><option value="LI">LIECHTENSTEIN</option><option value="LT">LITUANIE</option><option value="LU">LUXEMBOURG</option><option value="MO">MACAO</option><option value="MK">MACEDOINE, L\'EX-REPUBLIQUE YOUGOSLAVE DE</option><option value="MG">MADAGASCAR</option><option value="MY">MALAISIE</option><option value="MW">MALAWI</option><option value="MV">MALDIVES</option><option value="ML">MALI</option><option value="MT">MALTE</option><option value="MP">MARIANNES DU NORD, ILES</option><option value="MA">MAROC</option><option value="MH">MARSHALL, ILES</option><option value="MQ">MARTINIQUE</option><option value="MU">MAURICE</option><option value="MR">MAURITANIE</option><option value="YT">MAYOTTE</option><option value="MX">MEXIQUE</option><option value="FM">MICRONESIE, ETATS FEDERES DE</option><option value="MD">MOLDOVA, REPUBLIQUE DE</option><option value="MC">MONACO</option><option value="MN">MONGOLIE</option><option value="MS">MONTSERRAT</option><option value="MZ">MOZAMBIQUE</option><option value="MM">MYANMAR</option><option value="NA">NAMIBIE</option><option value="NR">NAURU</option><option value="NP">NEPAL</option><option value="NI">NICARAGUA</option><option value="NE">NIGER</option><option value="NG">NIGERIA</option><option value="NU">NIUE</option><option value="NF">NORFOLK, ILE</option><option value="NO">NORVEGE</option><option value="NC">NOUVELLE-CALEDONIE</option><option value="NZ">NOUVELLE-ZELANDE</option><option value="IO">OCEAN INDIEN, TERRITOIRE BRITANNIQUE DE L\'</option><option value="OM">OMAN</option><option value="UG">OUGANDA</option><option value="UZ">OUZBEKISTAN</option><option value="PK">PAKISTAN</option><option value="PW">PALAOS</option><option value="PS">PALESTINIEN OCCUPE, TERRITOIRE</option><option value="PA">PANAMA</option><option value="PG">PAPOUASIE-NOUVELLE-GUINEE</option><option value="PY">PARAGUAY</option><option value="NL">PAYS-BAS</option><option value="PE">PEROU</option><option value="PH">PHILIPPINES</option><option value="PN">PITCAIRN</option><option value="PL">POLOGNE</option><option value="PF">POLYNESIE FRANCAISE</option><option value="PR">PORTO RICO</option><option value="PT">PORTUGAL</option><option value="QA">QATAR</option><option value="RE">REUNION</option><option value="RO">ROUMANIE</option><option value="GB">ROYAUME-UNI</option><option value="RU">RUSSIE, FEDERATION DE</option><option value="RW">RWANDA</option><option value="EH">SAHARA OCCIDENTAL</option><option value="SH">SAINTE-HELENE</option><option value="LC">SAINTE-LUCIE</option><option value="KN">SAINT-KITTS-ET-NEVIS</option><option value="SM">SAINT-MARIN</option><option value="PM">SAINT-PIERRE-ET-MIQUELON</option><option value="VA">SAINT-SIEGE (ETAT DE LA CITE DU VATICAN)</option><option value="VC">SAINT-VINCENT-ET-LES GRENADINES</option><option value="SB">SALOMON, ILES</option><option value="WS">SAMOA</option><option value="AS">SAMOA AMERICAINES</option><option value="ST">SAO TOME-ET-PRINCIPE</option><option value="SN">SENEGAL</option><option value="CS">SERBIE-ET-MONTENEGRO</option><option value="SC">SEYCHELLES</option><option value="SL">SIERRA LEONE</option><option value="SG">SINGAPOUR</option><option value="SK">SLOVAQUIE</option><option value="SI">SLOVENIE</option><option value="SO">SOMALIE</option><option value="SD">SOUDAN</option><option value="LK">SRI LANKA</option><option value="SE">SUEDE</option><option value="CH">SUISSE</option><option value="SR">SURINAME</option><option value="SJ">SVALBARD ET ILE JAN MAYEN</option><option value="SZ">SWAZILAND</option><option value="SY">SYRIENNE, REPUBLIQUE ARABE</option><option value="TJ">TADJIKISTAN</option><option value="TW">TAIWAN, PROVINCE DE CHINE</option><option value="TZ">TANZANIE, REPUBLIQUE-UNIE DE</option><option value="TD">TCHAD</option><option value="CZ">TCHEQUE, REPUBLIQUE</option><option value="TF">TERRES AUSTRALES FRANCAISES</option><option value="TH">THAILANDE</option><option value="TL">TIMOR-LESTE</option><option value="TG">TOGO</option><option value="TK">TOKELAU</option><option value="TO">TONGA</option><option value="TT">TRINITE-ET-TOBAGO</option><option value="TN">TUNISIE</option><option value="TM">TURKMENISTAN</option><option value="TC">TURKS ET CAIQUES, ILES</option><option value="TR">TURQUIE</option><option value="TV">TUVALU</option><option value="UA">UKRAINE</option><option value="UY">URUGUAY</option><option value="VU">VANUATU</option><option value="VE">VENEZUELA</option><option value="VN">VIET NAM</option><option value="WF">WALLIS ET FUTUNA</option><option value="YE">YEMEN</option><option value="ZM">ZAMBIE</option><option value="ZW">ZIMBABWE</option></select></div></div></div></div>';
 	cs.$('.address').after(champsAdresse);
@@ -235,8 +234,6 @@ cs.pays = function(){
 	cs.$('#adresse').attr('placeholder', 'Ex: 50 avenue Montaigne, 75008 Paris');
 	cs.$('.address').after();
 	cs.$('.add-on').remove();
-
-	
 };
 
 
@@ -294,11 +291,11 @@ cs.templateForm = function(){
 cs.$(document).ready(function(){
 	
 	//simu
-	cs.setTplClass('simulation');
+	// cs.setTplClass('simulation');
 
 	//fonctions gobal formulaire
 	cs.setTplClass('formulaire');
-	// cs.templateForm();
+	cs.templateForm();
 	
 	//fonctions profil
 	if(/votre-identite/.test(cs.pathName)){
@@ -308,6 +305,7 @@ cs.$(document).ready(function(){
 		cs.confirmMail();
 		cs.telephonie();
 		cs.pays();
+		cs.complementAdresse();
 	}
 	//fonction demandes
 	if(/votre-demande/.test(cs.pathName)){
