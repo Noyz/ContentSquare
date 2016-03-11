@@ -243,35 +243,116 @@ cs.complementAdresse = function(){
 
 /////////////////////////////////////////////// FORMULAIRE DEMANDE ///////////////////////////////////////////////////////////////////////////////////
 cs.formDemande = function(){
-	cs.css += '.span{display:none}header h1{text-align:left}.csclear{clear:both}';
-	cs.$('#situationDeLogement').parents('.step1').addClass('cspart1');
+	cs.css += '.chemin-etapes div[class^="etape-"] div{background:url(" https://s3-eu-west-1.amazonaws.com/static.content-square.net/uxt/csf/CSetapes-last.png");display:inline-block;width:30px;height:33px}.chemin-etapes div.etape-der{background:url("https://s3-eu-west-1.amazonaws.com/static.content-square.net/uxt/csf/cschemin-der+(1).png")no-repeat center 5px;}.chemin-etapes .etape-n.act div{background:url("https://s3-eu-west-1.amazonaws.com/static.content-square.net/uxt/csf/cschemin-n-act2.png")}.chemin-etapes .etape-n.act{background:url("https://s3-eu-west-1.amazonaws.com/static.content-square.net/uxt/csf/cschemin-n-act.png") no-repeat center 5px;}.chemin-etapes .etape-prem.past div{background:url("https://s3-eu-west-1.amazonaws.com/static.content-square.net/uxt/csf/csetapes-first-past.png") no-repeat}.chemin-etapes .etape-prem.past{background:url("https://s3-eu-west-1.amazonaws.com/static.content-square.net/uxt/csf/cschemin-prem-act2.png") no-repeat center 5px}.span{display:none}header h1{text-align:left}.csclear{clear:both}';
+	var allSectionAddClass = [];
+	jQuery('input[name="opSubmit"]').attr('id', 'validateLogin');
+	cs.simulation = function(){
+		
+		cs.ajoutClassTitre = function(){
+			var allH2AddTitle = [];
+
+			jQuery('div.form-content > section').each(function(){
+				allSectionAddClass.push(jQuery(this));
+			});
+			for(var i =0;i < allSectionAddClass.length;i++){
+				jQuery(allSectionAddClass[i]).addClass('cspart' + i)
+					
+			};
+			jQuery('div.form-content > section h2:first-child').addClass('line');
+			jQuery('#situationDeLogement option:last-child').text('Choisissez dans la liste')
+			jQuery('div.form-content > section h2').each(function(){
+				var newTitre = ["VOTRE SIMULATION", "VOS REVENUS ET CHARGES", "VOS PRÊTS IMMOBILIERS"];
+				allH2AddTitle.push(jQuery(this));
+				for(var i = 0; i < newTitre.length;i++){
+					console.log(jQuery(allH2AddTitle[i]).html(newTitre[i]));
+				};
+			});
+		};
+ 
+		cs.changeLabelPositionSimulation = function(){
+			var oldLabel = [];
+			var newLabel = ["VOTRE SITUATION DE LOGEMENT", "VOTRE SITUATION MATRIMONIALE", "NOMBRES DE PERSONNES AU FOYER"];
+			jQuery('.cspart0 .col-sm-6').addClass('col-sm-8 col-md-8').removeClass('col-sm-6 col-md-6');
+			jQuery('section .form-line').removeClass('label-inside ');
+			jQuery('#nbDePersonnesAuFoyer').parents('.col-xs-12').addClass('csclear');
+			jQuery('.cscontent .add-on').remove();
+			jQuery('#situationMatrimoniale option:last-child').text('Choisissez dans la liste');
+			jQuery('#nbDePersonnesAuFoyer').attr('placeholder','Nombre de personnes fiscalement à charge');
+			jQuery('.cspart0 .col-sm-8 label').each(function(){
+				oldLabel.push(jQuery(this));
+			});
+			for(var i = 0; i < oldLabel.length;i++){
+				jQuery(oldLabel[i]).text(newLabel[i] + '*');
+			};
+		};
+		cs.ajoutClassTitre();
+		cs.changeLabelPositionSimulation();
+	};
+
+
+	cs.revenuCharges = function(){
+		var oldLabel = [];
+		var newLabel = ["Votre revenu net mensuel du foyer", "Vos charges mensuelles du foyer"];
+		jQuery('#montantDesRevenus').attr('placeholder','(salaire,allocations,pensions...)');
+		jQuery('#montantDesCharges').attr('placeholder','(loyer charges comprises, pensions, prêts...)');
+		jQuery('#montantDesCharges').parents('.col-md-6').addClass('csclear');
+		jQuery('.cspart1 .col-sm-6').addClass('col-sm-8 col-md-8').removeClass('col-sm-6 col-md-6');
+		jQuery('.cspart1 .col-sm-8 label').each(function(){
+			oldLabel.push(jQuery(this));
+		});
+		for(var i = 0; i < oldLabel.length;i++){
+			jQuery(oldLabel[i]).text(newLabel[i] + '*');
+		};
+	};
+
+	cs.pretImmobiliers = function(){
+		var rouge = jQuery('<p>*</p>').css('color','green');
+		var oldLabel = [];
+		var newLabel = ["Vos prêts immobiliers", "Vos prêts à la consommation","Le montant de votre nouveau projet"];
+		jQuery('#montantPretsImmo').attr('placeholder','montant total restant à rembourser');
+		jQuery('#montantPretsConso').attr('placeholder','montant total restant à rembourser');
+		jQuery('#montantNouveauProjet').attr('placeholder','(Trésorerie, achat de voiture,...)');
+		jQuery('.cspart2 .col-sm-3').remove();
+		jQuery('.cspart2 .col-sm-6').addClass('col-sm-8 col-md-8').removeClass('col-sm-6 col-md-6');
+		jQuery('.cspart2 input').each(function(){
+			oldLabel.push(jQuery(this));
+		});
+		for(var i = 0; i < oldLabel.length;i++){
+			jQuery(oldLabel[i]).before('<label>'+ newLabel[i] + '*' +'</label>' );
+		};
+	};
+
+
 	// cs.$('.step1:first-child').addClass('cspart1');
-	cs.$('.cspart1 h2').text('VOTRE SIMULATION').addClass('line');
-	cs.$('#situationDeLogement').parents('.form-line').removeClass('label-inside');
-	cs.$('#situationDeLogement').parents('.col-xs-12').addClass('col-md-8 col-sm-8').removeClass('col-md-6 col-sm-6');
-	cs.$('#situationMatrimoniale').parents('.form-line').removeClass('label-inside');
-	cs.$('#situationMatrimoniale').parents('.col-xs-12').addClass('col-md-8 col-sm-8').removeClass('col-md-6 col-sm-6');
-	cs.$('#nbDePersonnesAuFoyer').parents('.form-line').removeClass('label-inside');
-	cs.$('#nbDePersonnesAuFoyer').parents('.col-xs-12').addClass('csclear');
-	cs.$('#nbDePersonnesAuFoyer').parents('.col-xs-12').addClass('col-md-8 col-sm-8').removeClass('col-md-6 col-sm-6');
+	// cs.$('#situationDeLogement').parents('.step1').addClass('cspart1'); //1
+	// cs.$('.cspart1 h2').text('VOTRE SIMULATION').addClass('line');//2
+	// cs.$('#situationDeLogement').parents('.form-line').removeClass('label-inside');//3
+	// cs.$('#situationDeLogement').parents('.col-xs-12').addClass('col-md-8 col-sm-8').removeClass('col-md-6 col-sm-6');//4
+	// cs.$('#situationMatrimoniale').parents('.form-line').removeClass('label-inside');//3
+	// cs.$('#situationMatrimoniale').parents('.col-xs-12').addClass('col-md-8 col-sm-8').removeClass('col-md-6 col-sm-6');//4
+	// cs.$('#nbDePersonnesAuFoyer').parents('.form-line').removeClass('label-inside');//3
+	// cs.$('#nbDePersonnesAuFoyer').parents('.col-xs-12').addClass('csclear');
+	// cs.$('#nbDePersonnesAuFoyer').parents('.col-xs-12').addClass('col-md-8 col-sm-8').removeClass('col-md-6 col-sm-6');//4
 
-	cs.$('#montantDesRevenus').parents('.step1').addClass('cspart2');
-	cs.$('.cspart2 h2').text('VOS REVENUS ET CHARGES').addClass('line');
-	cs.$('#montantDesRevenus').parents('.col-xs-12').addClass('col-md-8 col-sm-8').removeClass('col-md-6 col-sm-6');
-	cs.$('#montantDesCharges').parents('.col-xs-12').addClass('col-md-8 col-sm-8 csclear').removeClass('col-md-6 col-sm-6');
+	// cs.$('#montantDesRevenus').parents('.step1').addClass('cspart2'); //1
+	// cs.$('.cspart2 h2').text('VOS REVENUS ET CHARGES').addClass('line');//2
+	// cs.$('#montantDesRevenus').parents('.col-xs-12').addClass('col-md-8 col-sm-8').removeClass('col-md-6 col-sm-6');//5
+	// cs.$('#montantDesCharges').parents('.col-xs-12').addClass('col-md-8 col-sm-8 csclear').removeClass('col-md-6 col-sm-6');//5
 
-	cs.$('#montantPretsImmo').parents('.step1').addClass('cspart3');
-	cs.$('.cspart3 h2').text('VOS PRÊTS IMMOBILIERS').addClass('line');
-	cs.$('#montantPretsImmo').parents('.input-append ').children('.col-md-3').remove();
-	cs.$('#montantPretsConso').parents('.input-append ').children('.col-md-3').remove();
-	cs.$('#montantNouveauProjet').parents('.input-append ').children('.col-md-3').remove();
-	cs.$('#montantPretsImmo').before('<label for="montantPretsImmo">Vos prêts immobiliers</label>');
-	cs.$('#montantPretsConso').before('<label for="montantPretsConso">Vos prêts à la consommation</label>');
-	cs.$('#montantNouveauProjet').before('<label for="montantNouveau Projet">Le montant de votre nouveau projet</label>');
-	cs.$('#montantPretsImmo').parents('.col-sm-6').addClass('col-sm-8 col-md-8').removeClass('col-sm-6 col-md-6');
-	cs.$('#montantPretsConso').parents('.col-sm-6').addClass('col-sm-8 col-md-8').removeClass('col-sm-6 col-md-6');
-	cs.$('#montantNouveauProjet').parents('.col-sm-6').addClass('col-sm-8 col-md-8').removeClass('col-sm-6 col-md-6');
-
+	// cs.$('#montantPretsImmo').parents('.step1').addClass('cspart3');//1
+	// cs.$('.cspart3 h2').text('VOS PRÊTS IMMOBILIERS').addClass('line');//2
+	// cs.$('#montantPretsImmo').parents('.input-append ').children('.col-md-3').remove();//6
+	// cs.$('#montantPretsConso').parents('.input-append ').children('.col-md-3').remove();//6
+	// cs.$('#montantNouveauProjet').parents('.input-append ').children('.col-md-3').remove();//6
+	// cs.$('#montantPretsImmo').before('<label for="montantPretsImmo">Vos prêts immobiliers</label>');//7
+	// cs.$('#montantPretsConso').before('<label for="montantPretsConso">Vos prêts à la consommation</label>');//7
+	// cs.$('#montantNouveauProjet').before('<label for="montantNouveau Projet">Le montant de votre nouveau projet</label>');//7
+	// cs.$('#montantPretsImmo').parents('.col-sm-6').addClass('col-sm-8 col-md-8').removeClass('col-sm-6 col-md-6');//8
+	// cs.$('#montantPretsConso').parents('.col-sm-6').addClass('col-sm-8 col-md-8').removeClass('col-sm-6 col-md-6');//8
+	// cs.$('#montantNouveauProjet').parents('.col-sm-6').addClass('col-sm-8 col-md-8').removeClass('col-sm-6 col-md-6');//8
+	cs.simulation();
+	cs.revenuCharges();
+	cs.pretImmobiliers();
 };
 
 /////////////////////////////////////////////// FORMULAIRE RECAPITULATIF ///////////////////////////////////////////////////////////////////////////////////
